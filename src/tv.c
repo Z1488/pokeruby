@@ -42,6 +42,7 @@
 #include "ewram.h"
 #include "constants/moves.h"
 #include "constants/region_map_sections.h"
+#include "constants/metatile_labels.h"
 
 struct UnkTvStruct
 {
@@ -61,7 +62,7 @@ struct TVSaleItem {
     u16 item_amount;
 };
 
-extern u8 gUnknown_02038694;
+extern u8 gContestMonPartyIndex;
 
 extern struct TVSaleItem gMartPurchaseHistory[3];
 
@@ -536,7 +537,7 @@ void UpdateTVScreensOnMap(int width, int height)
     switch (CheckForBigMovieOrEmergencyNewsOnTV())
     {
     case 1:
-        SetTVMetatilesOnMap(width, height, 0x3);
+        SetTVMetatilesOnMap(width, height, METATILE_ID(Building, TV_On));
         break;
     case 2:
         break;
@@ -544,12 +545,12 @@ void UpdateTVScreensOnMap(int width, int height)
         if (gSaveBlock1.location.mapGroup == MAP_GROUP(LILYCOVE_CITY_COVE_LILY_MOTEL_1F)
          && gSaveBlock1.location.mapNum == MAP_NUM(LILYCOVE_CITY_COVE_LILY_MOTEL_1F))
         {
-            SetTVMetatilesOnMap(width, height, 0x3);
+            SetTVMetatilesOnMap(width, height, METATILE_ID(Building, TV_On));
         }
         else if (FlagGet(FLAG_SYS_TV_START) && (sub_80BD8B8() != 0xff || FindAnyTVNewsOnTheAir() != 0xff || IsTVShowInSearchOfTrainersAiring()))
         {
             FlagClear(FLAG_SYS_TV_WATCH);
-            SetTVMetatilesOnMap(width, height, 0x3);
+            SetTVMetatilesOnMap(width, height, METATILE_ID(Building, TV_On));
         }
         break;
     }
@@ -565,14 +566,14 @@ void SetTVMetatilesOnMap(int width, int height, u16 tileId)
         for (x=0; x<width; x++)
         {
             if (MapGridGetMetatileBehaviorAt(x, y) == 0x86)
-                MapGridSetMetatileIdAt(x, y, tileId | 0xc00);
+                MapGridSetMetatileIdAt(x, y, tileId | (COLLISION_DIR_ALL << METATILE_COLLISION_SHIFT));
         }
     }
 }
 
 void TurnOffTVScreen(void)
 {
-    SetTVMetatilesOnMap(gUnknown_03004870.width, gUnknown_03004870.height, 0x2);
+    SetTVMetatilesOnMap(gUnknown_03004870.width, gUnknown_03004870.height, METATILE_ID(Building, TV_Off));
     DrawWholeMapView();
 }
 
@@ -634,7 +635,7 @@ void GabbyAndTyBeforeInterview(void)
     gSaveBlock1.gabbyAndTyData.lastMove = gBattleResults.lastUsedMove;
     if (gSaveBlock1.gabbyAndTyData.battleNum != 0xff)
         gSaveBlock1.gabbyAndTyData.battleNum ++;
-    gSaveBlock1.gabbyAndTyData.valA_0 = gBattleResults.unk5_0;
+    gSaveBlock1.gabbyAndTyData.valA_0 = gBattleResults.playerMonWasDamaged;
 
     if (gBattleResults.playerFaintCounter)
         gSaveBlock1.gabbyAndTyData.valA_1 = 1;
@@ -719,7 +720,7 @@ u8 GabbyAndTyGetLastBattleTrivia(void)
     return 0;
 }
 
-void GabbyAndTySetScriptVarsToEventObjectLocalIds(void)
+void GabbyAndTySetScriptVarsToObjectEventLocalIds(void)
 {
     switch (GabbyAndTyGetBattleNum())
     {
@@ -975,8 +976,8 @@ void sub_80BE284(u8 contestResult)
         bravoTrainer->contestResult = contestResult;
         bravoTrainer->contestCategory = gSpecialVar_ContestCategory;
         bravoTrainer->contestRank = (u8)gSpecialVar_ContestRank;
-        bravoTrainer->species = GetMonData(&gPlayerParty[gUnknown_02038694], MON_DATA_SPECIES, NULL);
-        GetMonData(&gPlayerParty[gUnknown_02038694], MON_DATA_NICKNAME, bravoTrainer->pokemonNickname);
+        bravoTrainer->species = GetMonData(&gPlayerParty[gContestMonPartyIndex], MON_DATA_SPECIES, NULL);
+        GetMonData(&gPlayerParty[gContestMonPartyIndex], MON_DATA_NICKNAME, bravoTrainer->pokemonNickname);
     }
 }
 
@@ -2073,7 +2074,7 @@ void ChangePokemonNickname(void)
 void ChangePokemonNickname_CB(void)
 {
     SetMonData(&(gPlayerParty[gSpecialVar_0x8004]), MON_DATA_NICKNAME, gStringVar2);
-    c2_exit_to_overworld_1_continue_scripts_restart_music();
+    CB2_ReturnToFieldContinueScriptPlayMapMusic();
 }
 
 void TV_CopyNicknameToStringVar1AndEnsureTerminated(void)
@@ -2184,7 +2185,7 @@ void GetMomOrDadStringForTVMessage(void)
 void sub_80BFD20(void)
 {
     VarSet(VAR_BRAVO_TRAINER_BATTLE_TOWER_ON, 0);
-    RemoveEventObjectByLocalIdAndMap(5, gSaveBlock1.location.mapNum, gSaveBlock1.location.mapGroup);
+    RemoveObjectEventByLocalIdAndMap(5, gSaveBlock1.location.mapNum, gSaveBlock1.location.mapGroup);
 }
 
 typedef union ewramStruct_02007000

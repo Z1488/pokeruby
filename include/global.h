@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "config.h" // we need to define config before gba headers as print stuff needs the functions nulled before defines.
 #include "gba/gba.h"
 
@@ -10,12 +11,27 @@
 #if defined(__APPLE__) || defined(__CYGWIN__)
 #define _(x) x
 #define __(x) x
-#define INCBIN_U8 {0}
-#define INCBIN_U16 {0}
-#define INCBIN_U32 {0}
-#define INCBIN_S8 {0}
-#define INCBIN_S16 {0}
-#define INCBIN_S32 {0}
+#define INCBIN(x) {0}
+#define INCBIN_U8 INCBIN
+#define INCBIN_U16 INCBIN
+#define INCBIN_U32 INCBIN
+#define INCBIN_S8 INCBIN
+#define INCBIN_S16 INCBIN
+#define INCBIN_S32 INCBIN
+#endif
+
+// For debug menu translations.
+// DTR("こんにちは", "Hello") will expand to "Hello" with DEBUG_TRANSLATE,
+// or "こんにちは" if not.
+// The KANA macro will wrap Japanese text with encoding markers to
+// prevent mojibake while they are being translated.
+
+#if DEBUG_TRANSLATE
+#define DTR(japanese, english) _(english)
+#define KANA(txt) _("{JPN}" txt "{ENG}")
+#else
+#define DTR(japanese, english) _(japanese)
+#define KANA(txt) _(txt)
 #endif
 
 // Prevent cross-jump optimization.
@@ -64,6 +80,13 @@ enum
 #define T2_READ_32(ptr) ((ptr)[0] + ((ptr)[1] << 8) + ((ptr)[2] << 16) + ((ptr)[3] << 24))
 #define T2_READ_PTR(ptr) (void*) T2_READ_32(ptr)
 
+#define T2_WRITE_32(ptr, value) ({\
+    (ptr)[0] = ((value) >>  0) & 0xFF;\
+    (ptr)[1] = ((value) >>  8) & 0xFF;\
+    (ptr)[2] = ((value) >> 16) & 0xFF;\
+    (ptr)[3] = ((value) >> 24) & 0xFF;\
+})
+
 // Credits to Made (dolphin emoji)
 #define S16TOPOSFLOAT(val)   \
 ({                           \
@@ -97,7 +120,7 @@ enum LanguageId
 #define DAYCARE_MON_COUNT   2
 #define POKEBLOCKS_COUNT    40
 #define PARTY_SIZE          6
-#define EVENT_OBJECTS_COUNT 16
+#define OBJECT_EVENTS_COUNT 16
 #define BERRY_TREES_COUNT   128
 #define FLAGS_COUNT         288
 #define VARS_COUNT          256
@@ -111,6 +134,11 @@ enum LanguageId
 #define BAG_POKEBALLS_COUNT 16
 #define BAG_TMHM_COUNT      64
 #define BAG_BERRIES_COUNT   46
+
+#define TEST_BUTTON(value, button) ({(value) & (button);})
+#define JOY_NEW(button) (TEST_BUTTON(gMain.newKeys, button))
+#define JOY_HELD(button) (TEST_BUTTON(gMain.heldKeys, button))
+#define JOY_REPT(button) (TEST_BUTTON(gMain.newAndRepeatedKeys, button))
 
 enum
 {
@@ -671,8 +699,8 @@ struct SaveBlock1 /* 0x02025734 */
     /*0x972*/ u8 filler_972[0x6];
     /*0x978*/ u16 trainerRematchStepCounter;
     /*0x97A*/ u8 trainerRematches[100];
-    /*0x9E0*/ struct EventObject eventObjects[EVENT_OBJECTS_COUNT];
-    /*0xC20*/ struct EventObjectTemplate eventObjectTemplates[64];
+    /*0x9E0*/ struct ObjectEvent objectEvents[OBJECT_EVENTS_COUNT];
+    /*0xC20*/ struct ObjectEventTemplate objectEventTemplates[64];
     /*0x1220*/ u8 flags[FLAGS_COUNT];
     /*0x1340*/ u16 vars[VARS_COUNT];
     /*0x1540*/ u32 gameStats[NUM_GAME_STATS];

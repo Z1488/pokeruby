@@ -1,6 +1,6 @@
 #include "global.h"
 #include "battle.h"
-#include "battle_anim_813F0F4.h"
+#include "battle_anim_special.h"
 #include "contest.h"
 #include "data2.h"
 #include "daycare.h"
@@ -122,7 +122,7 @@ static void SummaryScreen_PrintColoredText(const u8 *, u8, u8, u8);
 
 extern u8 StorageSystemGetNextMonIndex(struct BoxPokemon *, u8, u8, u8);
 
-extern struct MusicPlayerInfo gMPlay_BGM;
+extern struct MusicPlayerInfo gMPlayInfo_BGM;
 extern u8 gPPUpReadMasks[];
 extern TaskFunc gUnknown_03005CF0;
 extern struct SpriteTemplate gUnknown_02024E8C;
@@ -929,7 +929,7 @@ static void SummaryScreen_DestroyTask(u8 taskId)
         ResetSpriteData();
         FreeAllSpritePalettes();
         StopCryAndClearCrySongs();
-        m4aMPlayVolumeControl(&gMPlay_BGM, 0xFFFF, 0x100);
+        m4aMPlayVolumeControl(&gMPlayInfo_BGM, 0xFFFF, 0x100);
         SetMainCallback2(pssData.callback);
         DestroyTask(taskId);
     }
@@ -4772,15 +4772,15 @@ void sub_80A1C30(u8 a)
 
 u8 GetPrimaryStatus(u32 status)
 {
-    if (status & (STATUS_POISON | STATUS_TOXIC_POISON))
+    if (status & (STATUS1_POISON | STATUS1_TOXIC_POISON))
         return STATUS_PRIMARY_POISON;
-    if (status & STATUS_PARALYSIS)
+    if (status & STATUS1_PARALYSIS)
         return STATUS_PRIMARY_PARALYSIS;
-    if (status & STATUS_SLEEP)
+    if (status & STATUS1_SLEEP)
         return STATUS_PRIMARY_SLEEP;
-    if (status & STATUS_FREEZE)
+    if (status & STATUS1_FREEZE)
         return STATUS_PRIMARY_FREEZE;
-    if (status & STATUS_BURN)
+    if (status & STATUS1_BURN)
         return STATUS_PRIMARY_BURN;
 
     return STATUS_PRIMARY_NONE;

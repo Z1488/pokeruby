@@ -51,12 +51,12 @@ gSpecials::
 	def_special LoadPlayerParty
 	def_special sub_80C5568
 	def_special sub_8083BDC
-	def_special EventObjectInteractionGetBerryTreeData
+	def_special ObjectEventInteractionGetBerryTreeData
 	def_special Berry_FadeAndGoToBerryBagMenu
-	def_special EventObjectInteractionPlantBerryTree
-	def_special EventObjectInteractionPickBerryTree
-	def_special EventObjectInteractionRemoveBerryTree
-	def_special EventObjectInteractionWaterBerryTree
+	def_special ObjectEventInteractionPlantBerryTree
+	def_special ObjectEventInteractionPickBerryTree
+	def_special ObjectEventInteractionRemoveBerryTree
+	def_special ObjectEventInteractionWaterBerryTree
 	def_special PlayerHasBerries
 	def_special IsEnigmaBerryValid
 	def_special ScrSpecial_GetTrainerBattleMode
@@ -84,20 +84,20 @@ gSpecials::
 	def_special CheckForBigMovieOrEmergencyNewsOnTV
 	def_special GetMomOrDadStringForTVMessage
 	def_special ResetTVShowState
-	def_special sub_80C47C0
-	def_special sub_80C496C
+	def_special ScrSpecial_GetContestWinnerIdx
+	def_special ScrSpecial_GetContestPlayerMonIdx
 	def_special sub_80C4C28
-	def_special sub_80C47F0
-	def_special sub_80C4858
+	def_special ScrSpecial_GetContestWinnerTrainerName
+	def_special ScrSpecial_GetContestWinnerNick
 	def_special sub_80C4C64
-	def_special sub_80C4758
+	def_special ScrSpecial_CountContestMonsWithBetterCondition
 	def_special SetContestTrainerGfxIds
-	def_special sub_80C43F4
+	def_special ScrSpecial_CheckSelectedMonAndInitContest
 	def_special sub_80C4D80
-	def_special sub_80C4F70
-	def_special sub_80C47A0
-	def_special sub_80C4440
-	def_special sub_80C44C0
+	def_special ScrSpecial_SetLinkContestTrainerGfxIdx
+	def_special ScrSpecial_GetMonCondition
+	def_special ScrSpecial_CanMonParticipateInSelectedLinkContest
+	def_special ScrSpecial_GiveContestRibbon
 	def_special sub_80C5044
 	def_special GiveMonArtistRibbon
 	def_special sub_808363C
@@ -187,7 +187,7 @@ gSpecials::
 	def_special IsTVShowInSearchOfTrainersAiring
 	def_special GabbyAndTyGetLastQuote
 	def_special GabbyAndTyGetLastBattleTrivia
-	def_special GabbyAndTySetScriptVarsToEventObjectLocalIds
+	def_special GabbyAndTySetScriptVarsToObjectEventLocalIds
 	def_special GetBattleOutcome
 	def_special GetDaycareMonNicknames
 	def_special GetDaycareState
@@ -337,7 +337,7 @@ gSpecials::
 	def_special ScriptGetMultiplayerId
 	def_special ScriptGetPartyMonSpecies
 	def_special IsSelectedMonEgg
-	def_special TryInitBattleTowerAwardManEventObject
+	def_special TryInitBattleTowerAwardManObjectEvent
 	def_special MoveSecretBase
 	def_special LoadPlayerBag
 	def_special sub_8081924

@@ -4,11 +4,11 @@ SlateportCity_MapScripts:: @ 814BA36
 
 SlateportCity_MapScript1_14BA3C:: @ 814BA3C
 	.ifdef SAPPHIRE
-	setvar VAR_OBJ_GFX_ID_0, EVENT_OBJ_GFX_AQUA_MEMBER_F
-	setvar VAR_OBJ_GFX_ID_1, EVENT_OBJ_GFX_AQUA_MEMBER_M
+	setvar VAR_OBJ_GFX_ID_0, OBJ_EVENT_GFX_AQUA_MEMBER_F
+	setvar VAR_OBJ_GFX_ID_1, OBJ_EVENT_GFX_AQUA_MEMBER_M
 	.else
-	setvar VAR_OBJ_GFX_ID_0, EVENT_OBJ_GFX_MAGMA_MEMBER_F
-	setvar VAR_OBJ_GFX_ID_1, EVENT_OBJ_GFX_MAGMA_MEMBER_M
+	setvar VAR_OBJ_GFX_ID_0, OBJ_EVENT_GFX_MAGMA_MEMBER_F
+	setvar VAR_OBJ_GFX_ID_1, OBJ_EVENT_GFX_MAGMA_MEMBER_M
 	.endif
 	setvar VAR_SLATEPORT_MUSEUM_1F_STATE, 0
 	call SlateportCity_EventScript_14BA5C
@@ -66,11 +66,11 @@ SlateportCity_EventScript_14BAE0:: @ 814BAE0
 	faceplayer
 	bufferleadmonspeciesname 0
 	msgbox SlateportCity_Text_164682, 4
-	specialvar RESULT, LeadMonHasEffortRibbon
-	compare RESULT, 1
+	specialvar VAR_RESULT, LeadMonHasEffortRibbon
+	compare VAR_RESULT, 1
 	call_if_eq SlateportCity_EventScript_14BB35
-	specialvar RESULT, ScrSpecial_AreLeadMonEVsMaxedOut
-	compare RESULT, 0
+	specialvar VAR_RESULT, ScrSpecial_AreLeadMonEVsMaxedOut
+	compare VAR_RESULT, 0
 	call_if_eq SlateportCity_EventScript_14BB2B
 	msgbox SlateportCity_Text_164691, 4
 	playfanfare MUS_FANFA4
@@ -283,9 +283,9 @@ SlateportCity_EventScript_14BD06:: @ 814BD06
 	lock
 	faceplayer
 	msgbox SlateportCity_Text_1650F1, MSGBOX_YESNO
-	compare RESULT, YES
+	compare VAR_RESULT, YES
 	call_if_eq SlateportCity_EventScript_14BD28
-	compare RESULT, NO
+	compare VAR_RESULT, NO
 	call_if_eq SlateportCity_EventScript_14BD31
 	release
 	end

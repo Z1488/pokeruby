@@ -12,6 +12,7 @@
 #include "script.h"
 #include "script_movement.h"
 #include "constants/songs.h"
+#include "constants/metatile_labels.h"
 #include "sound.h"
 #include "sprite.h"
 #include "task.h"
@@ -26,8 +27,8 @@ enum
     STEP_END = 0xFE,
 };
 
-const u32 gEventObjectPic_MovingBox[] = INCBIN_U32("graphics/event_objects/pics/misc/moving_box.4bpp");
-const u16 gEventObjectPalette19[] = INCBIN_U16("graphics/event_objects/palettes/19.gbapal");
+const u32 gObjectEventPic_MovingBox[] = INCBIN_U32("graphics/object_events/pics/misc/moving_box.4bpp");
+const u16 gObjectEventPalette19[] = INCBIN_U16("graphics/object_events/palettes/19.gbapal");
 
 static const s8 gTruckCamera_HorizontalTable[] =
 {
@@ -239,9 +240,9 @@ void Task_HandleTruckSequence(u8 taskId)
         data[1]++;
         if (data[1] == 120)
         {
-            MapGridSetMetatileIdAt(11, 8, 520);
-            MapGridSetMetatileIdAt(11, 9, 528);
-            MapGridSetMetatileIdAt(11, 10, 536);
+            MapGridSetMetatileIdAt(11, 8, METATILE_ID(InsideOfTruck, ExitLight_Top));
+            MapGridSetMetatileIdAt(11, 9, METATILE_ID(InsideOfTruck, ExitLight_Mid));
+            MapGridSetMetatileIdAt(11, 10, METATILE_ID(InsideOfTruck, ExitLight_Bottom));
             DrawWholeMapView();
             PlaySE(SE_TRACK_DOOR);
             DestroyTask(taskId);
@@ -253,9 +254,9 @@ void Task_HandleTruckSequence(u8 taskId)
 
 void ExecuteTruckSequence(void)
 {
-    MapGridSetMetatileIdAt(11, 8, 525);
-    MapGridSetMetatileIdAt(11, 9, 533);
-    MapGridSetMetatileIdAt(11, 10, 541);
+    MapGridSetMetatileIdAt(11, 8, METATILE_ID(InsideOfTruck, DoorClosedFloor_Top));
+    MapGridSetMetatileIdAt(11, 9, METATILE_ID(InsideOfTruck, DoorClosedFloor_Mid));
+    MapGridSetMetatileIdAt(11, 10, METATILE_ID(InsideOfTruck, DoorClosedFloor_Bottom));
     DrawWholeMapView();
     ScriptContext2_Enable();
     CpuFastFill(0, gPlttBufferFaded, 0x400);
@@ -348,7 +349,7 @@ void Task_HandlePorthole(u8 taskId)
 
 void sub_80C78A0(void)
 {
-    u8 spriteId = AddPseudoEventObject(0x8C, SpriteCallbackDummy, 112, 80, 0);
+    u8 spriteId = AddPseudoObjectEvent(0x8C, SpriteCallbackDummy, 112, 80, 0);
 
     gSprites[spriteId].coordOffsetEnabled = FALSE;
 
@@ -365,7 +366,7 @@ void sub_80C78A0(void)
 void sub_80C791C(void)
 {
     sub_80C78A0();
-    gEventObjects[gPlayerAvatar.eventObjectId].invisible = TRUE;
+    gObjectEvents[gPlayerAvatar.objectEventId].invisible = TRUE;
     pal_fill_black();
     CreateTask(Task_HandlePorthole, 80);
     ScriptContext2_Enable();
